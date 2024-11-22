@@ -57,7 +57,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         boolean success = seckillVoucherService.update()
                 .setSql("stock = stock -1")
                 .eq("voucher_id", voucherId)
-
+                //.eq("stock",voucher.getStock()) 乐观锁 将库存作为版本号判断依据 但会有成功率低的问题
+                .gt("stock",0) //只需大于0即可，避免操作数据库时产生超卖
                 .update();
 
         if (!success) {
